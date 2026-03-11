@@ -1,0 +1,144 @@
+# Copyright (c) 2021 Veli Matti Lastumäki (Velsku at lampopumput.info),
+#                    Joonas Ihonen (puu at lampopumput.info),
+#                    Ilkka Roivainen (iro at lampopumput.info)
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# initialize and define Mitsurunner
+
+#################################################################################################################
+## This Mitsurunner "add-on" calculates the lengths of the heating cycles and displays them on WEB view        ##
+## Just include this file to the Mitsurunner-directory and add following line to mitsu_conf.yaml file          ##
+##   ....                                                                                                      ##
+##   cycle_base: !include heating_cycle.yaml                                                                   ##
+##   ...                                                                                                       ##
+#################################################################################################################
+
+globals:
+  - id: current_heating_minutes
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+  - id: heating_history
+    type: int[9]
+    restore_value: no
+    initial_value: '{0,0,0,0,0,0,0,0,0}'
+
+  - id: heating_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+  - id: display_index
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+#######################
+
+interval:
+  - interval: 60s
+    then:
+      - lambda: |-
+          float t = id(heat_exchanger_temp).state;
+
+          // Start cycle if t < 0°C
+          if (!id(heating_active) && t < 0.0) {
+            id(heating_active) = true;
+            id(current_heating_minutes) = 0;
+          }
+
+          // Stop cycle if t > +2°C
+          if (id(heating_active) && t > 2.0) {
+            id(heating_active) = false;
+
+            // Shift to right
+            for (int i = 8; i > 0; i--) {
+              id(heating_history)[i] = id(heating_history)[i - 1];
+            }
+
+            // Save newest cycle to 0
+            id(heating_history)[0] = id(current_heating_minutes);
+
+            // --- SEND TO HOME ASSISTANT IN HOURS + MINUTES ---
+            int minutes = id(current_heating_minutes);
+            int hours = minutes / 60;
+            int mins  = minutes % 60;
+
+            char buffer2[32];
+            if (hours > 0) {
+              sprintf(buffer2, "%dh %dmin", hours, mins);
+            } else {
+              sprintf(buffer2, "%dmin", mins);
+            }
+
+            id(last_cycle_length_text).publish_state(buffer2);
+            // -------------------------------------------------
+
+            // Clear cycle
+            id(current_heating_minutes) = 0;
+          }
+
+          // If heating ongoing, add minute
+          if (id(heating_active)) {
+            id(current_heating_minutes)++;
+          }
+
+#######################
+
+  # every 3 seconds change index (1 to 9) and show corresponding heating cycle duration
+  - interval: 3s
+    then:
+      - lambda: |-
+          id(cycle_and_length).update();
+          id(display_index)++;
+          if (id(display_index) > 8) {
+            id(display_index) = 0;
+          }
+
+text_sensor:
+  - platform: template
+    name: "Previous heating cycles"
+    id: cycle_and_length
+    disabled_by_default: true # do not send to HomeAssistant
+    update_interval: never
+    lambda: |-
+      char buffer[32];
+      int index = id(display_index);     // 0–8
+      int human_index = index + 1;          // 1–9
+      int minutes = id(heating_history)[index];
+
+      int hours = minutes / 60;
+      int mins  = minutes % 60;
+
+      if (hours > 0) {
+         sprintf(buffer, "%d / %dh %dmin", human_index, hours, mins);
+      } else {
+         sprintf(buffer, "%d / %dmin", human_index, mins);
+      }
+
+      return std::string(buffer);
+
+
+  - platform: template
+    name: "Last heating cycle length"
+    id: last_cycle_length_text
+    update_interval: never
+

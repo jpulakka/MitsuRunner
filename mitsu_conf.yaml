@@ -27,16 +27,19 @@
 ##   --------------------------------------------------------   ##
 ## Select modules of your Mitsurunner configuration             ## 
 ##  * either by commenting (#) not needed modules away          ##
-##    or deleting rows of not neeed modules away                ##
+##    or deleting rows of not need modules away                ##
 ##################################################################
 
 
 ##############################################################################
 #### Select HW platform related file and check/update details to the file ####
+####   * DS18B20 IDs, GPIO-pins                                           ####
+####   * log-level (DEBUG, INFO,...)                                      ####
+####   * enable/disable Homeassistant api                                 ####                        
 ##############################################################################
 
-<<: !include platform_wemos.yaml
-#<<: !include platform_elite.yaml
+<<: !include platform_wemos.yaml        ## Take this for Wemos
+#<<: !include platform_elite.yaml       ## Take this for Sonoff Elite (THR316D)
 
 ###############################################
 
@@ -46,8 +49,9 @@ packages:
 #### ! UPDATE WiFi-DETAILS to the file  !   ####
 ################################################
 
-  wifi_base: !include secrets.yaml              ## WifI needed
-#  wifi_base: !include secrets_sa.yaml          ## Stadalone mode, Wifi will be disable, only for Wemos
+  wifi_base: !include secrets.yaml              ##  Take this for Wemos
+#  wifi_base: !include secrets_elite.yaml       ## Take this for Sonoff Elite (THR316D)
+#  wifi_base: !include secrets_sa.yaml          ## Standalone mode, Wifi will be disable, only for Wemos
 
 ################################################
 #### Select configuration of Dallas sensors ####
@@ -56,7 +60,6 @@ packages:
 
 #  dallas_base: !include dallas_basic.yaml           ## basic-configuration
   dallas_base: !include dallas_hub.yaml              ## minimize restarts
-#  dallas_base: !include dallas_hub_status_Led.yaml  ## dallas_hub.yaml with on-board status_LED (only for Wemos)
 
 ############################################################
 #### Select used MQTT-server                            ####
@@ -67,7 +70,14 @@ packages:
 #  mqtt_base: !include mqtt_local.yaml         ## Some other (local) MQTT-server
 #  mqtt_base: !include mqtt_Guru.yaml         ## IoT-Guru server
   mqtt_base: !include mqtt_disabled.yaml     ## NOTE! This must be included if MQTT is not used
- 
+
+############################################################
+#### Select optinal "add_on" modules                    ####
+############################################################
+
+  heating_base: !include heating_cycle.yaml          ## measures and displays the lengths of previous heating periods
+  h_timeout_base: !include adaptive_heating_timeout.yaml      ## heating period timeout based on outdoor temperature
+
 ######################################################
 #### Mitsurunner core code, Do not touch!!        ####
 ######################################################
@@ -79,6 +89,4 @@ esphome:
   includes:
     - constants.h
     - state.h
-
-
-
+    

@@ -52,8 +52,8 @@ substitutions:
   topic_outdoor:                        '"$prefix/ulkoilma"'
   topic_delta:                          '"$prefix/delta"'
   topic_rssi:                           '"$prefix/rssi"'
-  topic_outdoor_errors:                 '"$prefix/kennovirhe"'
-  topic_exchanger_errors:               '"$prefix/ulkovirhe"'
+  topic_outdoor_errors:                 '"$prefix/ulkovirhe"'
+  topic_exchanger_errors:               '"$prefix/kennovirhe"'
   topic_state:                          '"$prefix/tila"'
   topic_uptime:                         '"$prefix/uptime"'
 
@@ -75,17 +75,42 @@ substitutions:
 interval:
   - interval: 60s
     then:
-      - lambda: !lambda |-
-            id(mqtt_client).publish($topic_outdoor, value_accuracy_to_string(id(outdoor_temp).state,1));
-            id(mqtt_client).publish($topic_heatexchanger, value_accuracy_to_string(id(heat_exchanger_temp).state,1));
-            id(mqtt_client).publish($topic_delta, value_accuracy_to_string(id(state_machine).state,1));
+      - lambda: |-
+          // ESPhome 2025+ vaatii 64‑tavuisen puskurin
+          char buf[64];
+          std::span<char, 64> span_buf(buf);
 
-            id(mqtt_client).publish($topic_exchanger_errors, to_string(id(heat_exchanger_temp_errors)));
-            id(mqtt_client).publish($topic_outdoor_errors, to_string(id(outdoor_temp_errors)));
+          // Lämpötilat
+          value_accuracy_to_buf(span_buf, id(outdoor_temp).state, 1);
+          id(mqtt_client).publish($topic_outdoor, buf);
 
-            id(mqtt_client).publish($topic_rssi, value_accuracy_to_string(id(wifi_signal_dbm).state,0));
-            id(mqtt_client).publish($topic_uptime, value_accuracy_to_string(id(uptime_counter).state,0));
+          value_accuracy_to_buf(span_buf, id(heat_exchanger_temp).state, 1);
+          id(mqtt_client).publish($topic_heatexchanger, buf);
 
-            id(mqtt_client).publish($topic_state, to_string(id(G_state)));
+          value_accuracy_to_buf(span_buf, id(state_machine).state, 1);
+          id(mqtt_client).publish($topic_delta, buf);
+
+          // Virhekoodit
+          value_accuracy_to_buf(span_buf, id(heat_exchanger_temp_errors), 0);
+          id(mqtt_client).publish($topic_exchanger_errors, buf);
+
+          value_accuracy_to_buf(span_buf, id(outdoor_temp_errors), 0);
+          id(mqtt_client).publish($topic_outdoor_errors, buf);
+
+          // RSSI
+          value_accuracy_to_buf(span_buf, id(wifi_signal_dbm).state, 0);
+          id(mqtt_client).publish($topic_rssi, buf);
+
+          // Uptime
+          value_accuracy_to_buf(span_buf, id(uptime_counter).state, 0);
+          id(mqtt_client).publish($topic_uptime, buf);
+
+          // G_state
+          value_accuracy_to_buf(span_buf, id(G_state), 0);
+          id(mqtt_client).publish($topic_state, buf);
+
+
+
+
 
 

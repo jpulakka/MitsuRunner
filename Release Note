@@ -1,0 +1,51 @@
+Release Overview
+================
+
+This MitsuRunner release supports two hardware platforms:
+ * ESP8266‑based Wemos, and
+ * ESP32‑based Sonoff Elite THR316D.
+
+Data can be transmitted via MQTT to IoT‑Guru, a local MQTT broker, or to Home Assistant using the HA API.
+
+This release also includes two optional add‑on features:
+ * Time‑out defrosting adjusted according to outdoor temperature
+ * Heating cycle length calculation with WEB‑view display
+
+Configuration is now built by including selected YAML modules, instead of editing a single monolithic configuration file. This modular structure makes the setup cleaner, more flexible, and easier to maintain.
+
+
+Changes from previous release
+=============================
+
+mitsu_conf.yaml
+  Added new selectable modules for compilation and building.
+
+mitsurunner.yaml
+  Device stays in reset state until Dallas sensors have received valid readings.
+  Adjustments for the adaptive_heating_timeout module.  
+
+MQTT_Guru.yaml, MQTT_local.yaml
+  Updated for compatibility with future ESPHome versions.
+
+platform_wemos.yaml
+  Added feature to display MitsuRunner version in the WEB view.
+  WiFi, HA, and MQTT time‑out increased from 6 hours to 10 hours.
+
+platform_elite.yaml
+  Updated for compatibility with ESPHome 2026.
+  WiFi, HA, and MQTT time‑out increased from 6 hours to 10 hours.
+  Added WiFi AP‑mode and captive portal (activated if WiFi is lost for more than 2 minutes).
+  User interface improvements (LEDs and display).
+
+secrets_elite.yaml (new)
+  Dedicated configuration file for Sonoff Elite THR316D devices.
+
+adaptive_heating_timeout.yaml (new optional feature)
+  Outdoor‑temperature‑based adaptive maximum heating time:
+     Missing outdoor value → default = 3h
+     Above −10 °C → default + 3h = 6h
+     Between −10 °C and −20 °C → default + 1.5h = 4.5h
+     Below −20 °C → default = 3h
+
+heating_cycle.yaml
+  Calculates heating cycle durations and displays them in the WEB view and Home Assistant.(new optional feature)

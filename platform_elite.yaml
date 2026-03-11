@@ -21,6 +21,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 ###########################################################################
 ##        Home Assistant and Logger settings                             ##
 ##        ----------------------------------------------------------     ##
@@ -32,6 +33,7 @@
 # Select logger-level
 logger:          #  After installation and testing phase it may be wise to reduce debug communication
   level: INFO    # by adding comment (#) at the begining of this line more log-info
+#  baud_rate: 0   # USB-logs disabled
 
 ###########################################################################
 ##        This module specifies HW of your SonOff Elite Mitsurunner      ##
@@ -44,16 +46,22 @@ logger:          #  After installation and testing phase it may be wise to reduc
 # Define these values according to your hardware see: https://esphome.io
 esp32:
   board: nodemcu-32s
+  framework:
+    type: arduino
   
 ###########################################################################
 substitutions:
 
+# Sw_version, Update !
+  fw_version: "2026_1"  
+
 # Common reboot timeout for WiFi, MQTT and HomeAssiant. Change value if needed.
-  common_reboot_timeout: '360min'
+  common_reboot_timeout: '600min'
 
 # Addresses for your Dallas DS18B20 temperature sensors - you need to update these
-  dallas_address_heat_exchanger_temp: '0x8501191438ccd428'
-  dallas_address_outdoor_temp:        '0x2dd4e3391e64ff28'
+
+  dallas_address_heat_exchanger_temp: '0x0000000000000000'
+  dallas_address_outdoor_temp:        '0x0000000000000000'
 
 # IO-pins:
   dallas_pin: 'GPIO25' # Pin for DS18B20 1-wire temperature sensors. Set to the pin number you are using.
@@ -70,27 +78,48 @@ substitutions:
 ### RED LED = POWER #### GREEN LED = Defrost prevention control activated ###
 #############################################################################
 
-output:
+switch:
   - platform: gpio
-    pin: GPIO16
-    inverted: true
+    pin:
+      number: GPIO16
+      inverted: true
+    internal: true
     id: red_led
 
+output:
   - platform: gpio
     pin: GPIO13
     inverted: true
     id: green_led
 
-#  - platform: gpio
-#    pin: GPIO15
-#    inverted: true
-#    id: yellow_led
+  - platform: gpio
+    pin: GPIO15
+    inverted: true
+    id: blue_led
 
+##########################################################################
+
+interval:
+  - interval: 1000ms
+    then:
+      - lambda: |-
+
+          if (id(gpio_relay).state) id(green_led).turn_on();    //Green LED ON if defrost_prevention_Relay is ON
+            else id(green_led).turn_off();
+
+          if (wifi::global_wifi_component->is_ap_active()) id(blue_led).turn_on();
+            else id(blue_led).turn_off();
+
+          if (wifi::global_wifi_component->is_connected()) {
+            id(red_led).turn_on();       // when WiFi-connected ==>  red-led is ON
+          } else {
+            id(red_led).toggle();        // when WiFi is not connected ==> red-led blinks
+          }
 
 display:
   platform: tm1621
   id: tm1621_display
-  update_interval: 5s
+  update_interval: 2500ms
   cs_pin: GPIO17
   data_pin:
     number: GPIO5
@@ -99,24 +128,62 @@ display:
   write_pin: GPIO18
   lambda: |-
     static int n = 0;
-    id(red_led).turn_on();                                //Keep POWER-led ON
-
-    if (id(gpio_relay).state) id(green_led).turn_on();    //Green LED ON if defrost_prevention_Relay is ON
-    else id(green_led).turn_off();
-
-    if (n == 0) {
-       n = 1;
+    
+    n = n+1;   
+    if ((n == 1) || (n == 2)|| (n == 4)|| (n == 5)) {
        it.printf(0, "%.1f", id(heat_exchanger_temp).state);
        it.display_celsius(true);
        it.printf(1, "%.1f", id(outdoor_temp).state);
        it.display_humidity(false);
+       return;
        }
-     else {
+    if (n == 3) {
+       it.printf(0,"%.1i", id(heat_exchanger_temp_errors));   
+       it.display_celsius(false);
+       it.printf(1,"%.1i", id(outdoor_temp_errors));
+       it.display_humidity(false);
+       return;
+       }
+    if (n == 6) {
        n = 0;
        it.printf(0, "%.1f", id(wifi_signal_dbm).state);
        it.display_celsius(false);
-       it.printf(1,"%.1i", id(outdoor_temp_errors)+ id(heat_exchanger_temp_errors));
+       it.printf(1,"%3.0f", id(ip_last).state);    
+       it.display_humidity(false);
+       }
+    if (n == 6) {
+       n = 0;
+       it.printf(0, "%.5d", id(wifi_signal_dbm).state);
+       it.display_celsius(false);
+       it.printf(1,"%3.0f", id(ip_last).state);    
        it.display_humidity(false);
        }
 
+##########################################################################
+text_sensor:                ## last part of ip-address
+  - platform: wifi_info
+    ip_address:
+      name: "IP-osoite"
+      id: ip_address
+      internal: true
 
+  - platform: template   ## software version 
+    name: "_Firmware version"
+    icon: mdi:tag
+    lambda: |-
+      return {"${fw_version}"};
+
+##########################################################################
+sensor:
+  - platform: template
+    id: ip_last
+    name: "IP loppuosa"
+    internal: true
+    lambda: |-
+      if (id(ip_address).state == "") return NAN;
+      int last = atoi(id(ip_address).state.substr(
+        id(ip_address).state.find_last_of('.') + 1).c_str());
+      return last;
+    update_interval: 60s
+    
+########################################################################

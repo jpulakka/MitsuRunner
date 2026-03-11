@@ -1,0 +1,109 @@
+##############################################################################################
+##       This yaml code allows you to see the IDs of connected DS18B20 sensors on WEB-view  ##
+##############################################################################################
+# 
+# Update the WiFi SSID, Wifi password, and Dallas PIN
+######################################################
+
+esphome:
+  name: mitsurunner                    # update in case of OTA-download
+  comment: "Dallas_IDt"
+
+esp8266:                # for Wemos
+  board: nodemcuv2      # for Wemos
+
+one_wire:
+  - platform: gpio
+    pin: D3            # Update if needed
+    id: ow_bus
+
+wifi:
+  ssid: "xxxx"         # update !
+  password: "yyyyyyyy"  # update !
+  reboot_timeout: 0s
+
+
+ota:
+   - platform: esphome
+
+######################################################################
+
+logger:
+  level: INFO
+
+web_server:
+  port: 80
+
+globals:
+  - id: start_scan
+    type: bool
+    restore_value: no
+    initial_value: "false"
+
+  - id: found_ids
+    type: std::string
+    restore_value: no
+    initial_value: ""
+
+sensor:
+  - platform: dallas_temp
+    id: dd
+    internal: true
+    update_interval: never
+
+text_sensor:
+  - platform: template
+    id: ds_id_1
+    name: "DS18B20 #1 ID"
+  - platform: template
+    id: ds_id_2
+    name: "DS18B20 #2 ID"
+  - platform: template
+    id: ds_id_3
+    name: "DS18B20 #3 ID"
+  - platform: template
+    id: ds_id_4
+    name: "DS18B20 #4 ID"
+  - platform: template
+    id: ds_id_5
+    name: "DS18B20 #5 ID"
+
+button:
+  - platform: template
+    name: "New scan"
+    on_press:
+      then:
+        - lambda: |-
+            // Tyhjennetään vanhat arvot
+            id(ds_id_1).publish_state("not found");
+            id(ds_id_2).publish_state("not found");
+            id(ds_id_3).publish_state("not found");
+            id(ds_id_4).publish_state("not found");
+            id(ds_id_5).publish_state("not found");
+
+            const auto &devices = id(ow_bus).get_devices();
+            int idx = 0;
+
+            for (auto dev : devices) {
+              if (idx >= 5) break;   // max 5 anturia
+
+              uint8_t a[8];
+              for (int i = 0; i < 8; i++) {
+                a[i] = (dev >> (8 * (7 - i))) & 0xFF;
+              }
+
+              char buf[32];
+              sprintf(buf,
+                      "%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X",
+                      a[0], a[1], a[2], a[3],
+                      a[4], a[5], a[6], a[7]);
+
+              if (idx == 0) id(ds_id_1).publish_state(buf);
+              if (idx == 1) id(ds_id_2).publish_state(buf);
+              if (idx == 2) id(ds_id_3).publish_state(buf);
+              if (idx == 3) id(ds_id_4).publish_state(buf);
+              if (idx == 4) id(ds_id_5).publish_state(buf);
+
+              idx++;
+            }
+

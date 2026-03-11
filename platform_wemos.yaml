@@ -49,18 +49,30 @@ esp8266:               # For Wemos
 
 substitutions:
 
+  # Sw_version, Update !
+  fw_version: "2026_1"  
+
 # Common reboot timeout for WiFi, MQTT and HomeAssiant. Change value if needed.
 
-  common_reboot_timeout: '360min'
+  common_reboot_timeout: '600min'
 
 # Addresses for your Dallas DS18B20 temperature sensors - you need to update these
-  dallas_address_heat_exchanger_temp: '0x2dd4e3391e64ff28'     # '0x93011913f7d58628'
-  dallas_address_outdoor_temp:        '0x2dd4e3391e64ff28'     # '0x4501191b6fa33d28'
+  dallas_address_heat_exchanger_temp: '0x0000000000000000'
+  dallas_address_outdoor_temp:        '0x0000000000000000'
 
 # IO-pins:
   dallas_pin: 'D3' # Pin for DS18B20 1-wire temperature sensors. Set to the pin number you are using.
   relay_pin:  'D1' # Pin for controlling relay
   dallas_power_pin: 'D4' # Built-in LED
 
+##########################################
+
+text_sensor: 
+  - platform: template   ## software version 
+    name: "_Firmware version"
+    icon: mdi:tag
+    lambda: |-
+      return {"${fw_version}"};
+      
 
 
