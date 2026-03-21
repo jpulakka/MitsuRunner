@@ -7,7 +7,7 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 ---
 
 * C:\CODE\elektro\mitsurunner\ asennettu python -m venv .\
-* pip3 install esphome -U ajettu, CH340-ajuri asennettu
+* pip3 install esphome -U ajettu, CH340-ajuri asennettu, esphome versiota 2026.3.0
 * C:\CODE\elektro\mitsurunner\counterfeit_DS18B20_esp8266\
 * C:\CODE\elektro\mitsurunner\MitsuRunner\
 * Scripts\activate = aktivoi venv
@@ -17,8 +17,6 @@ OTA:
 * https://web.esphome.io/
 
 TODO:
-* gitigore secrets
-* Update esphome to 2026.3.0
 * hw_check.yaml testaa (esphome run hw_check.yaml) - Toimiko tämä Dallas D3, Relay D1? Ei kai
 * mitsu_conf.yaml säädä dependencyt:
   * platform_wemos.yaml
