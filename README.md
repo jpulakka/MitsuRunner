@@ -21,10 +21,10 @@ TODO:
 * hw_check.yaml testaa (esphome run hw_check.yaml) - Toimiko tämä Dallas D3, Relay D1? Ei kai
 * mitsu_conf.yaml säädä dependencyt:
   * platform_wemos.yaml
-    * HomeAssistant_API käytettäessä ota käyttöön HomeAssistant api.  MQTT HASSiin
   * secrets.yaml
   * dallas_hub.yaml
   * mqtt_local.yaml
+  * -> Ok!
 * Sitten: esphome run mitsu_conf.yaml
 * Jos klooni ei hyvä, tee itse atomeista! kupari- tai messinkiputkeen, epoksivalu
-* yhteinen 10 mm läpivienti kolmelle johdolle?
+* In Home Assistant, go to Settings → Devices & Services, click "Add Integration", choose ESPHome, enter MitsuRunner’s hostname or IP, and complete the wizard.
