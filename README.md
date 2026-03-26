@@ -15,6 +15,7 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 OTA:
 * https://esphome.io/components/ota/esphome/
 * https://web.esphome.io/
+* static_ip: 192.168.10.5, gateway: 192.168.10.1
 
 TODO:
 * hw_check.yaml testaa (esphome run hw_check.yaml) - Toimiko tämä Dallas D3, Relay D1? Ei kai
