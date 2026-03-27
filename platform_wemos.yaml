@@ -26,8 +26,8 @@
 ##        ----------------------------------------------------------     ##
 ###########################################################################
 # Enable/disabe HomeAssistant
-#api:                                       # !! If home Assistant in use remove comment (#)
-#  reboot_timeout: $common_reboot_timeout   # !! If home Assistant in use remove comment (#)
+api:                                       # !! If home Assistant in use remove comment (#)
+  reboot_timeout: $common_reboot_timeout   # !! If home Assistant in use remove comment (#)
 #####################
 # Select logger-level
 logger:          #  After installation and testing phase it may be wise to reduce debug communication
