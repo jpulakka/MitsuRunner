@@ -14,12 +14,10 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 * hw_check.yaml testaa (esphome run hw_check.yaml) -> Dallas D2, Relay D1
 * esphome run mitsu_conf.yaml
   * Tämä toimii nyt myös OTA.
-
-OTA:
+* In Home Assistant, go to Settings → Devices & Services, click "Add Integration", choose ESPHome, enter MitsuRunner’s hostname or IP, and complete the wizard.
 * https://esphome.io/components/ota/esphome/
 * https://web.esphome.io/
 * static_ip: 192.168.10.5, gateway: 192.168.10.1
 
 TODO:
 * Jos klooni ei hyvä, tee itse atomeista! kupari- tai messinkiputkeen, epoksivalu
-* In Home Assistant, go to Settings → Devices & Services, click "Add Integration", choose ESPHome, enter MitsuRunner’s hostname or IP, and complete the wizard.
