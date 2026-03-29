@@ -36,11 +36,11 @@ substitutions:
 
 # Set the GPIO-pins according to your HW-connections
   dallas_pin: 'D2' # Pin for DS18B20 1-wire temperature sensors. Set to the pin number you are using.
-  relay_pin:  'D3' # Pin for controlling relay
+  relay_pin:  'D1' # Pin for controlling relay
  
 # Dallas_IDs can be found in the logs, when the IDs are updated, the temperatures are shown in the logs
-  dallas_a: '0xaaaaaaaaaaaaaa28'      
-  dallas_b: '0xbbbbbbbbbbbbbb28'  
+  dallas_a: '0xad000000740bd828'      
+  dallas_b: '0x840000006ef81428'  
 
 # Logs on
 logger:
