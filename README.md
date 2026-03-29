@@ -12,7 +12,8 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 * C:\CODE\elektro\mitsurunner\MitsuRunner\
 * Scripts\activate = aktivoi venv
 * hw_check.yaml testaa (esphome run hw_check.yaml) -> Dallas D2, Relay D1
-* Sitten: esphome run mitsu_conf.yaml
+* esphome run mitsu_conf.yaml
+  * Tämä toimii nyt myös OTA.
 
 OTA:
 * https://esphome.io/components/ota/esphome/
