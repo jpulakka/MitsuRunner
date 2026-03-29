@@ -11,6 +11,8 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 * C:\CODE\elektro\mitsurunner\counterfeit_DS18B20_esp8266\
 * C:\CODE\elektro\mitsurunner\MitsuRunner\
 * Scripts\activate = aktivoi venv
+* hw_check.yaml testaa (esphome run hw_check.yaml) -> Dallas D2, Relay D1
+* Sitten: esphome run mitsu_conf.yaml
 
 OTA:
 * https://esphome.io/components/ota/esphome/
@@ -18,13 +20,5 @@ OTA:
 * static_ip: 192.168.10.5, gateway: 192.168.10.1
 
 TODO:
-* hw_check.yaml testaa (esphome run hw_check.yaml) - Toimiko tämä Dallas D3, Relay D1? Ei kai
-* mitsu_conf.yaml säädä dependencyt:
-  * platform_wemos.yaml
-  * secrets.yaml
-  * dallas_hub.yaml
-  * mqtt_local.yaml
-  * -> Ok!
-* Sitten: esphome run mitsu_conf.yaml
 * Jos klooni ei hyvä, tee itse atomeista! kupari- tai messinkiputkeen, epoksivalu
 * In Home Assistant, go to Settings → Devices & Services, click "Add Integration", choose ESPHome, enter MitsuRunner’s hostname or IP, and complete the wizard.
