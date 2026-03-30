@@ -118,6 +118,7 @@ switch:
   - platform: gpio # 3.3V supply for Dallas sensors (Sonoff Elite only)
     pin: 
       number: $dallas_power_pin
+      inverted: true  # I want to see my Wemos power LED :)
       mode:
         output: true
     id: dallas_power
