@@ -21,3 +21,10 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 
 TODO:
 * Jos klooni ei hyvä, tee itse atomeista! kupari- tai messinkiputkeen, epoksivalu
+
+Usage:
+1. cd C:\CODE\elektro\mitsurunner\
+2. Scripts\activate
+3. cd MitsuRunner
+4. Edit secrets.yaml, replace PASSWORD
+5. esphome run mitsu_conf.yaml
