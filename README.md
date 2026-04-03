@@ -17,7 +17,7 @@ https://lampopumput.info/foorumi/threads/msz-ln-sulatushuijaus.31223/page-63
 * In Home Assistant, go to Settings → Devices & Services, click "Add Integration", choose ESPHome, enter MitsuRunner’s hostname or IP, and complete the wizard.
 * https://esphome.io/components/ota/esphome/
 * https://web.esphome.io/
-* static_ip: 192.168.10.5, gateway: 192.168.10.1
+* static_ip: 192.168.10.5, gateway: 192.168.10.1, fallback ap 192.168.4.1
 
 TODO:
 * Jos klooni ei hyvä, tee itse atomeista! kupari- tai messinkiputkeen, epoksivalu
