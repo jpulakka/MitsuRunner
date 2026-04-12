@@ -27,7 +27,8 @@
 ###########################################################################
 # Enable/disabe HomeAssistant
 api:                                       # !! If home Assistant in use remove comment (#)
-  reboot_timeout: $common_reboot_timeout   # !! If home Assistant in use remove comment (#)
+#  reboot_timeout: $common_reboot_timeout   # !! If home Assistant in use remove comment (#)
+  reboot_timeout: 0s  # 0s disables HA reboot_timeout
 #####################
 # Select logger-level
 logger:          #  After installation and testing phase it may be wise to reduce debug communication
