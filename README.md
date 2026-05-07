@@ -28,3 +28,8 @@ Usage:
 3. cd MitsuRunner
 4. Edit secrets.yaml, replace PASSWORD
 5. esphome run mitsu_conf.yaml
+
+Reboot issues: After the next spontaneous crash, run esphome logs mitsu_conf.yaml right after it comes back — the 2026.4 crash handler will print a decoded backtrace in the boot log automatically.
+* Also, look at Reset Reason. If it's Software Watchdog, watch Free Heap and Loop Time trends leading up to it — the HA history graph is useful here.
+* If Free Heap is the culprit, the known fix for ESP8266 long-uptime stability is periodic scheduled reboots (e.g., every 7 days at 03:00 via time + App.restart()), since the root cause is usually the closed-source WiFi SDK.
+
