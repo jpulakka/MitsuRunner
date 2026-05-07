@@ -68,12 +68,30 @@ substitutions:
 
 ##########################################
 
-text_sensor: 
-  - platform: template   ## software version 
+debug:
+  update_interval: 60s
+
+text_sensor:
+  - platform: template   ## software version
     name: "_Firmware version"
     icon: mdi:tag
     lambda: |-
       return {"${fw_version}"};
-      
+  - platform: debug
+    reset_reason:
+      name: "Reset Reason"
 
+sensor:
+  - platform: debug
+    free:
+      name: "Heap Free"
+    block:
+      name: "Heap Max Block"
+    fragmentation:
+      name: "Heap Fragmentation"
+    loop_time:
+      name: "Loop Time"
 
+safe_mode:
+  boot_is_good_after: 60s
+  num_attempts: 10
