@@ -33,5 +33,5 @@ Reboot issues: After the next spontaneous crash, run esphome logs mitsu_conf.yam
 * Also, look at Reset Reason. If it's Software Watchdog, watch Free Heap and Loop Time trends leading up to it — the HA history graph is useful here.
 * If Free Heap is the culprit, the known fix for ESP8266 long-uptime stability is periodic scheduled reboots (e.g., every 7 days at 03:00 via time + App.restart()), since the root cause is usually the closed-source WiFi SDK.
 * 5/2026 käännetty esphome 2026.4.5:llä, toistaiseksi vaikuttaa vakaalta, >5000 minuutissa 1 lukuvirhe outdoor sensorilta, ei muuta -> Mutta kaatui pian sen jälkeen.
-* Korjausyritys https://github.com/jpulakka/MitsuRunner/commit/3ce0486891a9600c6d4f8acfb47eb55286507ef2 , tästä PR jos hyvä.
+* Korjausyritys https://github.com/jpulakka/MitsuRunner/commit/3ce0486891a9600c6d4f8acfb47eb55286507ef2 + https://github.com/jpulakka/MitsuRunner/commit/2d2b59bb734ce93f23897921af4234ec60e39883 tästä PR jos hyvä. Tosin power_save_mode: none on redundantti, se on jo defaulttina niin esp8266:ssa.
 
