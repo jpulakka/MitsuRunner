@@ -236,7 +236,7 @@ sensor:
     id: uptime_counter
     name: "Uptime"
     filters:
-      - lambda: return x / 60.0;   // uptime in minutes
+      - lambda: return (int)(x / 60.0);   // uptime in minutes
     unit_of_measurement: "min"
     update_interval: 60s
 
