@@ -34,6 +34,8 @@ sensor:
     name: "MaxHeatingTime"
     unit_of_measurement: "min"
     update_interval: 60s
+    filters:
+      - lambda: return (int)x;
     lambda: |-
         if (isnan(id(outdoor_temp).state)) id(out_t_coefficient) = 0;           // outdoor temp value missing ==> default (3h)
         else if (id(outdoor_temp).state >= -10.0) id(out_t_coefficient) = 180;   // above -10C ==> default + 180min (6h)

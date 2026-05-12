@@ -85,12 +85,20 @@ sensor:
   - platform: debug
     free:
       name: "Heap Free"
+      filters:
+        - lambda: return (int)x;
     block:
       name: "Heap Max Block"
+      filters:
+        - lambda: return (int)x;
     fragmentation:
       name: "Heap Fragmentation"
+      filters:
+        - lambda: return (int)x;
     loop_time:
       name: "Loop Time"
+      filters:
+        - lambda: return (int)x;
 
 safe_mode:
   boot_is_good_after: 60s

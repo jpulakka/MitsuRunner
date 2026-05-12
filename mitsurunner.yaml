@@ -201,6 +201,8 @@ sensor:
     name: "State"
     id: state_template
     unit_of_measurement: " "
+    filters:
+      - lambda: return (int)x;
     lambda: "return id(G_state);"
 
 # RSSI monitoring, reports the WiFi signal strength in dBm
@@ -220,6 +222,8 @@ sensor:
     name: "Errors - outdoor temperature"
     unit_of_measurement: " "
     update_interval: 120s
+    filters:
+      - lambda: return (int)x;
     lambda: |-
         return id(outdoor_temp_errors);
 
@@ -228,6 +232,8 @@ sensor:
     name: "Errors - heat exchanger temperature"
     unit_of_measurement: " "
     update_interval: 120s
+    filters:
+      - lambda: return (int)x;
     lambda: |-
         return id(heat_exchanger_temp_errors);
 
