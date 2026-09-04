@@ -37,3 +37,7 @@ Reboot issues: After the next spontaneous crash, run esphome logs mitsu_conf.yam
 * post_connect_roaming: false oli katastrofi. Mutta toisen wifin poistaminen listasta näyttää  hyvältä, nyt on taas stable.
 * TODO ehkä: float formatting fixes, were those just artifacts in stack trace, not reasons?
 
+Uptimet:
+* 2026.4.5: 15688, 3209, 3152, 1246, 13634, 1318, 11406, 543, 1335, 11522, 9299, 2542, 24910, 1407, 19992, 7799 (last number before total freeze power cycle required), ... päivitettiin 2026.8.2:een 4.9.2026
+* 2026.8.2:
+
